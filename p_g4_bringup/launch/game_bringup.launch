@@ -1,7 +1,7 @@
 <launch>
 
     <rosparam command="load" file="$(find p_g4_bringup)/params/game.yaml"/>
-
+    <rosparam command="load" file="$(find p_g4_bringup)/params/configuracoes.yaml"/>
 <!--    Red Team-->
 
     <!--        red1-->
