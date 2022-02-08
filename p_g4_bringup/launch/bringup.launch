@@ -6,8 +6,8 @@
     <arg name="visualize" default="true"/>
     <arg name="driver" default="false"/>
     <arg name="driver_debug" default="false"/>
-    <arg name="x_pos" default="0.0"/>
-    <arg name="y_pos" default="-2.0"/>
+    <arg name="x_pos" default="-0.4"/>
+    <arg name="y_pos" default="-1.5"/>
     <arg name="z_pos" default="0.0"/>
 
     <group ns = "$(arg player_name)">
@@ -26,7 +26,7 @@
 
         <group if="$(arg visualize)">
             <include file="$(find p_g4_bringup)/launch/visualize.launch">
-                <arg name="player_name" value="$(arg player_name)"/>
+<!--                <arg name="player_name" value="$(arg player_name)"/>-->
             </include>
         </group>
 
