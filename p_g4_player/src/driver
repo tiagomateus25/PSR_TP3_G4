@@ -40,6 +40,7 @@ class Driver:
         self.encontra = 0
         self.equipa = ''
         self.tempoturn = 0
+        self.imagesize = 0
 
         self.last_angle = 0
         self.angle = 0
@@ -74,6 +75,10 @@ class Driver:
 
         bridge = CvBridge()
         cv_image = bridge.imgmsg_to_cv2(msg, "bgr8")  # "passthrough" ) #
+
+        _, w, _ = cv_image.shape
+        #print('width:  ', w)
+        self.imagesize = w
 
         # mascaras que vao detectar apresas ou os caçadores
         green_mask = cv2.inRange(cv_image, lowergreen, uppergreen)
@@ -112,7 +117,7 @@ class Driver:
                     self.drivetoKill(cx, cy, 1)
                     if debugmode:
                         cv2.putText(cv_image, "presa", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
-                break
+               # break
 
             # não encontra a presa vai parar
             # TODO: vai rodar à procura dela
@@ -148,8 +153,8 @@ class Driver:
 
     def driveforlife(self, x, y, minumum_speed=0.3, maximum_speed=0.8):
 
-        if ((x > 0) and (x < 1280)):
-            if (x < 640):
+        if ((x > 0) and (x < self.imagesize)):
+            if (x < (self.imagesize/2)):
                 self.angle = -8 * viramuito
                 self.speed = 0
                 self.tempoturn = time.time()
@@ -166,11 +171,11 @@ class Driver:
                 self.angle = 0
             elif ((time.time() - self.tempoturn) < 5):
                 self.angle = 0
-                self.speed = 1.5 * minumum_speed
+                self.speed = 1.2 * minumum_speed
             else:
                 self.angle = 0
                 self.tempoturn = 0
-                self.speed = 1.3 * maximum_speed
+                self.speed = maximum_speed
 
         if (self.encontra == 0):
             self.speed = 0
@@ -181,27 +186,29 @@ class Driver:
                 "driveforlife x:" + str(x) + " y:" + str(y) + "  self.angle:" + str(self.angle) + " self.speed:" + str(
                     self.speed) + " cacador:" + str(self.encontra))
 
-    def drivetoKill(self, x, y, op, minumum_speed=0.4, maximum_speed=1.0 ):
+    def drivetoKill(self, x, y, op, minumum_speed=0.3, maximum_speed=1.0 ):
+
+        temp = (self.imagesize/2)
 
         if op == 1:
-            if ((x > 0) and (x < 640)):
-                if (x < 320):
+            if ((x > 0) and (x < temp)):
+                if (x < (int(temp*0.6))):
                     self.angle = viramuito
                     self.speed = minumum_speed
-                elif (x < 550):
+                elif (x < (int(temp*0.9))):
                     self.angle = vira
-                    self.speed = maximum_speed
+                    self.speed = 0.8*maximum_speed
                 else:
                     self.angle = virapouco
                     self.speed = 1.3 * maximum_speed
             # TODO: VIRAR pouco pu nao virar quando está no centro da imagem
-            elif ((x > 640) ):
-                if (x < 700):
+            elif ((x > temp ) ):
+                if (x < (int(temp*1.1))):
                     self.angle = -1*virapouco
                     self.speed = 1.3 * maximum_speed
-                elif x < 960:
+                elif x < (int(temp*1.3)):
                     self.angle = -1*vira
-                    self.speed = maximum_speed
+                    self.speed = 0.8*maximum_speed
                 else:
                     self.angle = -1*viramuito
                     self.speed = minumum_speed
