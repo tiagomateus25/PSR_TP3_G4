@@ -186,7 +186,7 @@ class Driver:
                 "driveforlife x:" + str(x) + " y:" + str(y) + "  self.angle:" + str(self.angle) + " self.speed:" + str(
                     self.speed) + " cacador:" + str(self.encontra))
 
-    def drivetoKill(self, x, y, op, minumum_speed=0.3, maximum_speed=1.0, msg ):
+    def drivetoKill(self, x, y, op, minumum_speed=0.3, maximum_speed=1.0 ):
 
         temp = (self.imagesize/2)
 
@@ -242,9 +242,12 @@ class Driver:
             self.angle = viramuito
         # elif msg.ranges[0] == 0:
         #     self.speed = -0.5
-        else:
 
-
+        twist = Twist()
+        twist.linear.x = self.speed
+        twist.angular.z = self.angle
+        self.last_angle = self.angle
+        self.publisher_command.publish(twist)
     def goalReceivedCallback(self, msg):
         # TODO verify is goal is on odom frame
         print('Received new goal on frame id' + msg.header.frame_id)
