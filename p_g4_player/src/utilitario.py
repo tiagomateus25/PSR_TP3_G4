@@ -28,12 +28,16 @@ def configurarEquipa(player_name):
 
     return equipa
 
-def configurarEstrategia(player_team):
+def configurarEstrategia(player_team, player_name):
 
-    estrategia = {'red1': rospy.get_param('/'+player_team+'jogador1'),
-                'red2': rospy.get_param('/'+player_team+'jogador2'),
-                'red3': rospy.get_param('/'+player_team+'jogador3')}
+    print(player_team + "  Equpa e jogador "+ player_name + "   parameter::" + player_team + player_name)
+
+    estrategia = {player_name: rospy.get_param('/' + player_team + player_name)}
+
+      # estrategia = {'red1': rospy.get_param('/'+player_team+'jogador1'),
+      #               'red2': rospy.get_param('/'+player_team+'jogador2'),
+      #               'red3': rospy.get_param('/'+player_team+'jogador3')}
 
     # TODO: verificar se é erategia 3 e atribuir uma nova conforme os pontos de apanhar e ser apanhado
-
+    #  int(math.fabs(-8))
     return estrategia
