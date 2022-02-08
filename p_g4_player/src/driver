@@ -58,12 +58,12 @@ class Driver:
         self.timer = rospy.Timer(rospy.Duration(0.1), self.sendCommandCallback)
 
         self.goal_subscriber = rospy.Subscriber('/move_base_simple/goal', PoseStamped, self.goalReceivedCallback)
-        self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstacle)
+        # self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstacle)
     def action(self):
        # print('action image_subscriber')
         self.image_subscriber = rospy.Subscriber("/" + self.name + "/camera/rgb/image_raw", Image, self.goalImageCallback)
         #rospy.spin()
-        # self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstacle)
+        self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstacle)
 
     def goalImageCallback(self, msg):
      # if debugmode:
@@ -237,9 +237,19 @@ class Driver:
 
         if msg.ranges[1] < lim or msg.ranges[15] < lim or msg.ranges[30] < lim or msg.ranges[45] < lim or msg.ranges[
             60] < lim or msg.ranges[315] < lim or msg.ranges[330] < lim \
-                or msg.ranges[345] < lim or msg.ranges[350] < lim or msg.ranges[355] < lim:
+                or msg.ranges[345]:
             self.speed = 0
             self.angle = viramuito
+        else:
+           self.speed = minumum_speed
+           self.angle = 0
+           if msg.ranges[1] < lim or msg.ranges[15] < lim or msg.ranges[30] < lim or msg.ranges[45] < lim or msg.ranges[
+            60] < lim or msg.ranges[315] < lim or msg.ranges[330] < lim \
+                or msg.ranges[345]:
+                self.speed = 0
+                self.angle = viramuito
+
+
         # elif msg.ranges[0] == 0:
         #     self.speed = -0.5
 
@@ -248,6 +258,7 @@ class Driver:
         twist.angular.z = self.angle
         self.last_angle = self.angle
         self.publisher_command.publish(twist)
+
     def goalReceivedCallback(self, msg):
         # TODO verify is goal is on odom frame
         print('Received new goal on frame id' + msg.header.frame_id)
@@ -311,7 +322,7 @@ class Driver:
 
 def main():
 
-    rospy.init_node('p_bpereira_driver', anonymous=False)
+    rospy.init_node('p_g4_driver', anonymous=False)
     driver = Driver()
 
     equipa = configurarEquipa( driver.name )
