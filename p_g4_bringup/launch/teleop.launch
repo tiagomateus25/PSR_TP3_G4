@@ -1,0 +1,9 @@
+<launch>
+    <arg name="player_name" default="p_g4"/>
+    <group ns="$(arg player_name)">
+
+        <node pkg="p_g4_bringup" type="teleop.py" name="teleop" output="screen">
+        </node>
+
+    </group>
+</launch>
