@@ -3,7 +3,7 @@
 
 import cv2
 from cv_bridge import CvBridge
-from sensor_msgs.msg import Image, LaserScan
+from sensor_msgs.msg import Image
 from utilitario import configurarEquipa, configurarEstrategia
 
 import time
@@ -63,7 +63,7 @@ class Driver:
        # print('action image_subscriber')
         self.image_subscriber = rospy.Subscriber("/" + self.name + "/camera/rgb/image_raw", Image, self.goalImageCallback)
         #rospy.spin()
-        self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstacle)
+
     def goalImageCallback(self, msg):
      # if debugmode:
         #     print('goalImageCallback  self.equipa' + self.equipa + '  EStrategia:' + str(self.estrategia))
@@ -230,20 +230,6 @@ class Driver:
 
         self.goal_active = 3
         #self.goal_active = 0
-
-    def obstacle(self, msg, minumum_speed=0.3):
-        lim = 1.5
-
-        if msg.ranges[0]<lim and msg.ranges[15]<lim and msg.ranges[345]<lim:
-            self.speed = 0
-            self.angle = viramuito
-        else:
-            if (self.encontra == 0):
-                self.angle = viramuito
-                self.speed = minumum_speed
-            else:
-                self.speed = minumum_speed
-                self.angle = self.last_angle
 
 
     def goalReceivedCallback(self, msg):
