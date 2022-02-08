@@ -58,12 +58,13 @@ class Driver:
         self.timer = rospy.Timer(rospy.Duration(0.1), self.sendCommandCallback)
 
         self.goal_subscriber = rospy.Subscriber('/move_base_simple/goal', PoseStamped, self.goalReceivedCallback)
-
+        self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstacle)
     def action(self):
        # print('action image_subscriber')
         self.image_subscriber = rospy.Subscriber("/" + self.name + "/camera/rgb/image_raw", Image, self.goalImageCallback)
         #rospy.spin()
-        self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstacle)
+        # self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstacle)
+
     def goalImageCallback(self, msg):
      # if debugmode:
         #     print('goalImageCallback  self.equipa' + self.equipa + '  EStrategia:' + str(self.estrategia))
@@ -185,7 +186,7 @@ class Driver:
                 "driveforlife x:" + str(x) + " y:" + str(y) + "  self.angle:" + str(self.angle) + " self.speed:" + str(
                     self.speed) + " cacador:" + str(self.encontra))
 
-    def drivetoKill(self, x, y, op, minumum_speed=0.3, maximum_speed=1.0 ):
+    def drivetoKill(self, x, y, op, minumum_speed=0.3, maximum_speed=1.0, msg ):
 
         temp = (self.imagesize/2)
 
@@ -234,16 +235,14 @@ class Driver:
     def obstacle(self, msg, minumum_speed=0.3):
         lim = 1.5
 
-        if msg.ranges[0]<lim and msg.ranges[15]<lim and msg.ranges[345]<lim:
+        if msg.ranges[1] < lim or msg.ranges[15] < lim or msg.ranges[30] < lim or msg.ranges[45] < lim or msg.ranges[
+            60] < lim or msg.ranges[315] < lim or msg.ranges[330] < lim \
+                or msg.ranges[345] < lim or msg.ranges[350] < lim or msg.ranges[355] < lim:
             self.speed = 0
             self.angle = viramuito
+        # elif msg.ranges[0] == 0:
+        #     self.speed = -0.5
         else:
-            if (self.encontra == 0):
-                self.angle = viramuito
-                self.speed = minumum_speed
-            else:
-                self.speed = minumum_speed
-                self.angle = self.last_angle
 
 
     def goalReceivedCallback(self, msg):
