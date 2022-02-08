@@ -235,7 +235,7 @@ class Driver:
     def obstacle(self, msg, minumum_speed=0.3):
         lim = 1.5
 
-        if msg.ranges[1] < lim or msg.ranges[15] < lim or msg.ranges[30] < lim or msg.ranges[45] < lim or msg.ranges[
+        if msg.ranges[0] < lim or msg.ranges[15] < lim or msg.ranges[30] < lim or msg.ranges[45] < lim or msg.ranges[
             60] < lim or msg.ranges[315] < lim or msg.ranges[330] < lim \
                 or msg.ranges[345]:
             self.speed = 0
@@ -243,7 +243,7 @@ class Driver:
         else:
            self.speed = minumum_speed
            self.angle = 0
-           if msg.ranges[1] < lim or msg.ranges[15] < lim or msg.ranges[30] < lim or msg.ranges[45] < lim or msg.ranges[
+           if msg.ranges[0] < lim or msg.ranges[15] < lim or msg.ranges[30] < lim or msg.ranges[45] < lim or msg.ranges[
             60] < lim or msg.ranges[315] < lim or msg.ranges[330] < lim \
                 or msg.ranges[345]:
                 self.speed = 0
