@@ -63,8 +63,8 @@ class Driver:
        # print('action image_subscriber')
         self.image_subscriber = rospy.Subscriber("/" + self.name + "/camera/rgb/image_raw", Image, self.goalImageCallback)
         rospy.spin()
-        
 
+    def goalImageCallback(self, msg):
      # if debugmode:
         #     print('goalImageCallback  self.equipa' + self.equipa + '  EStrategia:' + str(self.estrategia))
 
