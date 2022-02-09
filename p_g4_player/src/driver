@@ -47,11 +47,11 @@ class Driver:
 
         #--------------------obstaculo--------------------
 
-        self.obstaculo_frente = None
-        self.obstaculo_direita = None
-        self.obstaculo_esquerda = None
-        self.obstaculo_frentedireita = None
-        self.obstaculo_frenteesquerda = None
+        self.parede_frente = None
+        self.parede_direita = None
+        self.parede_esquerda = None
+        self.parede_frentedireita = None
+        self.parede_frenteesquerda = None
 
         #-------------------------------------------------
         self.name = rospy.get_name()
@@ -67,7 +67,7 @@ class Driver:
         self.timer = rospy.Timer(rospy.Duration(0.1), self.sendCommandCallback)
 
         self.goal_subscriber = rospy.Subscriber('/move_base_simple/goal', PoseStamped, self.goalReceivedCallback)
-        self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstaculo)
+        self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.parede)
 
     def action(self):
        # print('action image_subscriber')
@@ -349,48 +349,48 @@ class Driver:
         self.goal_active = 3
         #self.goal_active = 0
 
-    def obstaculo(self, msg, minumum_speed=0.3, maximum_speed=0.8):
+    def parede(self, msg, minumum_speed=0.3, maximum_speed=0.8):
         lim1 = 2
         lim2 = 1
         lim3 = 0.5
         #--------------------limites-------------------->
         #------frente------------
         if msg.ranges[0] < lim1:
-            self.obstaculo_frente = True
+            self.parede_frente = True
         else:
-            self.obstaculo_frente = False
+            self.parede_frente = False
         #-------esquerda-----------
         if min(min(msg.ranges[60:100]), 10) < lim2:
-            self.obstaculo_esquerda = True
+            self.parede_esquerda = True
         else:
-            self.obstaculo_esquerda = False
+            self.parede_esquerda = False
         #-------direita------------
         if min(min(msg.ranges[260:300]), 10) < lim2:
-            self.obstaculo_direita = True
+            self.parede_direita = True
         else:
-            self.obstaculo_direita = False
+            self.parede_direita = False
         #------frente_esquerda-------
         if min(min(msg.ranges[5:15]), 10) < lim3:
-            self.obstaculo_frenteesquerda = True
+            self.parede_frenteesquerda = True
         else:
-            self.obstaculo_frenteesquerda = False
+            self.parede_frenteesquerda = False
         #-------frente_direita--------
         if min(min(msg.ranges[315:345]), 10) < lim3:
-            self.obstaculo_frentedireita = True
+            self.parede_frentedireita = True
         else:
-            self.obstaculo_frentedireita = False
+            self.parede_frentedireita = False
         #------------------------------------------------>
 
         #------------Deteção----------------------------->
 
         if (msg.ranges[0] > lim3 and min(min(msg.ranges[5:15]), 10) > lim3) or (msg.ranges[0] > lim3 and min(min(msg.ranges[315:345]), 10) > lim3):
             #---------------esquerda------->
-            if (self.obstaculo_frente and self.obstaculo_esquerda) or (self.obstaculo_frente and self.obstaculo_frenteesquerda) or (self.obstaculo_esquerda and self.obstaculo_frenteesquerda):
+            if (self.parede_frente and self.parede_esquerda) or (self.parede_frente and self.parede_frenteesquerda) or (self.parede_esquerda and self.parede_frenteesquerda):
                 self.angle = -viramuito
                 self.speed = minumum_speed
             #------------direita----------->
-            elif (self.obstaculo_frente and self.obstaculo_direita) or (self.obstaculo_frente and self.obstaculo_frentedireita) or (self.obstaculo_direita and self.obstaculo_frentedireita):
-                self.angel = viramuito
+            elif (self.parede_frente and self.parede_direita) or (self.parede_frente and self.parede_frentedireita) or (self.parede_direita and self.parede_frentedireita):
+                self.angle = viramuito
                 self.speed = minumum_speed
             #---------------nada----------->
             else:
@@ -399,7 +399,7 @@ class Driver:
         #----------marcha atras------------>
         else:
             self.speed = -maximum_speed
-            self.angle = virapouco
+            self.angle = viramuito
         if debugmode:
             print("obstaculo!")
 
