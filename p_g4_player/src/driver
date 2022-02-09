@@ -18,9 +18,9 @@ import tf2_geometry_msgs  # **Do not use geometry_msgs. Use this instead for Pos
 debugmode = True
 equipa = []
 estrategia = []
-viramuito = 0.7
-virapouco = 0.1
-vira = 0.3
+viramuito = 0.5
+virapouco = 0.05
+vira = 0.2
 lowergreen = np.array([0, 90, 0])
 uppergreen = np.array([40, 256, 40])
 lowerred = np.array([0, 0, 90])
@@ -32,11 +32,11 @@ class Driver:
 
     def __init__(self):
         self.goal = PoseStamped()
-        # 0 parado, 1 goal, 2 procura, 3 caça, 4 foge
+        # 0 parado, 1 goal, 2 procura, 3 caça, 4 foge, 5 caça e foge
         self.goal_active = 0
-        self.last_goal_active = 0
         self.estrategia = 0
         self.encontra = 0
+        self.last_encontra = 0
         self.equipa = ''
         self.tempoturn = 0
         self.imagesize = 0
@@ -59,6 +59,7 @@ class Driver:
 
         self.goal_subscriber = rospy.Subscriber('/move_base_simple/goal', PoseStamped, self.goalReceivedCallback)
         # self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstacle)
+
     def action(self):
        # print('action image_subscriber')
         self.image_subscriber = rospy.Subscriber("/" + self.name + "/camera/rgb/image_raw", Image, self.goalImageCallback)
@@ -104,7 +105,51 @@ class Driver:
     # curvas a 90º antes de bater na parede? velocidades? sempre a topo ee fica todo descontrolado, pode ter vantagens ou desvantagens.
      # TODO: procedimento
 
-        if self.estrategia != 2:
+        if self.estrategia == 3:
+            if self.encontra != 5:
+                self.encontra = 0
+
+            contoursm, _ = cv2.findContours(presa_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            atax = 0
+            atay = 0
+            deax = 0
+            deay = 0
+
+            for contoursmi in contoursm:
+                if self.encontra != 5:
+                    self.encontra = 1
+                M = cv2.moments(contoursmi)
+                if M['m00'] != 0:
+                    atax = int(M['m10'] / M['m00'])
+                    atay = int(M['m01'] / M['m00'])
+
+                if debugmode:
+                    cv2.putText(cv_image, "presa", (atax, atay), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+               # break;
+
+            contoursm, _ = cv2.findContours(cacador_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            for contoursmi in contoursm:
+                if self.encontra == 0 or self.encontra == 2:
+                    self.encontra = 2
+                else:
+                    self.encontra = 3
+                M = cv2.moments(contoursmi)
+                if M['m00'] != 0:
+                    deax = int(M['m10'] / M['m00'])
+                    deay = int(M['m01'] / M['m00'])
+
+                if debugmode:
+                    cv2.putText(cv_image, "cacador", (deax, deay), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+               # break;
+
+            # TODO : detectar qual o maior, para ver se está mais perto
+            # c = max(contours, key=cv2.contourArea)
+            # x, y, w, h = cv2.boundingRect(c)
+
+            self.drivesmart( atax, atay, deax, deay)
+
+        elif self.estrategia == 1:
             cx = 0
             contoursm, _ = cv2.findContours(presa_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             for contoursmi in contoursm:
@@ -115,6 +160,7 @@ class Driver:
                     cy = int(M['m01'] / M['m00'])
 
                     self.drivetoKill(cx, cy, 1)
+
                     if debugmode:
                         cv2.putText(cv_image, "presa", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
                 #break
@@ -128,7 +174,7 @@ class Driver:
 
         # está na altura de fugir
         # MODO DE FUGITIVO
-        if self.estrategia == 2:
+        elif self.estrategia == 2:
 
             self.goal_active = 4
             cx = 0
@@ -150,6 +196,68 @@ class Driver:
         if debugmode:
             cv2.imshow(self.name, cv_image)
             cv2.waitKey(1)
+
+    def drivesmart(self, ax, ay,  dx, dy, minumum_speed=0.4, maximum_speed=0.8):
+
+        self.goal_active = 5
+        # encontra = 1 : encontra presa, encontra = 2 : encontra caçador, encontra = 3 : encontra presa e caçador
+
+        if debugmode:
+            print("drivesmart self.angle:" + str(self.angle) +" last_angle:" + str(self.last_angle) + " self.speed:"
+                  + str(self.speed) + " encontra:" + str(self.encontra) + " lastencontra:" + str(self.last_encontra))
+
+        if (self.encontra == 0):
+            if self.last_encontra == 5:
+                self.angle = self.last_angle
+            else:
+                self.angle = vira
+                self.last_encontra = 0
+
+            self.speed = minumum_speed
+
+            self.tempoturn = 0
+        else:
+            temp = self.imagesize / 2
+
+            if ( self.encontra == 3): # existe presa e caçador
+                self.last_encontra = 0
+
+                #verificar para que lado vira foge do caçador e pressegue a presa
+                if ( (ax > dx )):
+                    self.angle = -1 * vira
+                    self.speed =  minumum_speed
+                else:
+                    self.angle = vira
+                    self.speed =  minumum_speed
+
+            if (self.encontra == 2):  # só ve o caçador
+                self.driveforlife(dx, dy)
+                self.tempoturn = 0
+                self.last_encontra = 0
+
+            if (self.encontra == 1 and  self.last_encontra != 5):  # só ve a presa
+                self.last_encontra = 1
+                self.encontra = 5
+
+            if (self.encontra == 1 and self.last_encontra == 5):
+                self.drivetoKill(ax, ay, 1)
+
+        if self.encontra == 5:
+            self.angle = 0
+            self.speed = 0
+            if debugmode:
+                print("está no 5 e o tempo que passou " + str(time.time() - self.tempoturn) )
+            if self.tempoturn == 0:
+                self.tempoturn = time.time()
+            elif ((time.time() - self.tempoturn) > 3):
+                self.tempoturn = 0
+                self.encontra = 1
+                self.last_encontra = 5
+
+        if debugmode:
+            print("drivesmart ax:" + str(ax) + " dx:" + str(dx) + "  self.angle:" + str(self.angle) + " self.speed:"
+                  + str(self.speed) + " encontra:" + str(self.encontra)+ " lastencontra:" + str(self.last_encontra))
+
 
     def driveforlife(self, x, y, minumum_speed=0.3, maximum_speed=0.8):
 
@@ -186,7 +294,7 @@ class Driver:
                 "driveforlife x:" + str(x) + " y:" + str(y) + "  self.angle:" + str(self.angle) + " self.speed:" + str(
                     self.speed) + " cacador:" + str(self.encontra))
 
-    def drivetoKill(self, x, y, op, minumum_speed=0.3, maximum_speed=1.0 ):
+    def drivetoKill(self, x, y, op, minumum_speed=0.2, maximum_speed=0.8 ):
 
         temp = (self.imagesize/2)
 
@@ -310,8 +418,7 @@ class Driver:
             self.driveStraight()
 
         if debugmode:
-            print('Sending twist command ' + str(self.goal_active) + ' last_goal_active::' + str(
-                self.last_goal_active) + ' speed::' + str(self.speed) + "  angulo::" + str(self.angle))
+            print('Sending twist command ' + str(self.goal_active) + ' speed::' + str(self.speed) + "  angulo::" + str(self.angle))
 
         twist = Twist()
         twist.linear.x = self.speed
