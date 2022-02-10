@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="player_name" default="p_bpereira"/>
+  <arg name="player_name" default="p_g4"/>
   <!-- lançar o RViZ -->
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find p_g4_bringup)/config/$(arg player_name).rviz"/>
 </launch>
