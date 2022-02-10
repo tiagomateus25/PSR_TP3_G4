@@ -1,5 +1,6 @@
 <launch>
-    <!-- Launch rviz, loading configuration file -->
-    <node name="rviz" pkg="rviz" type="rviz"
-          args="--display-config $(find p_g4_bringup)/config/visualize.rviz" required="false"/>
+
+  <arg name="player_name" default="p_bpereira"/>
+  <!-- lançar o RViZ -->
+  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find p_g4_bringup)/config/$(arg player_name).rviz"/>
 </launch>
