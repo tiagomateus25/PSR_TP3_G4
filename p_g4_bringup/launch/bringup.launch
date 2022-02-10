@@ -26,7 +26,7 @@
 
         <group if="$(arg visualize)">
             <include file="$(find p_g4_bringup)/launch/visualize.launch">
-<!--                <arg name="player_name" value="$(arg player_name)"/>-->
+                <arg name="player_name" value="$(arg player_name)"/>
             </include>
         </group>
 

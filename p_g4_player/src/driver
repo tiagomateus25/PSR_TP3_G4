@@ -216,15 +216,16 @@ class Driver:
                   + str(self.speed) + " encontra:" + str(self.encontra) + " lastencontra:" + str(self.last_encontra))
 
         if (self.encontra == 0):
-            if self.last_encontra == 5:
-                self.angle = self.last_angle
-            else:
-                self.angle = vira
-                self.last_encontra = 0
+            if self.parede_frente == False and self.parede_esquerda == False and self.parede_direita == False and self.parede_frenteesquerda == False and self.parede_frentedireita == False:
+                if self.last_encontra == 5:
+                    self.angle = self.last_angle
+                else:
+                    self.angle = vira
+                    self.last_encontra = 0
 
-            self.speed = minumum_speed
+                self.speed = minumum_speed
 
-            self.tempoturn = 0
+                self.tempoturn = 0
         else:
             temp = self.imagesize / 2
 
@@ -281,18 +282,19 @@ class Driver:
                 self.speed = 0
                 self.tempoturn = time.time()
         else:
-            alo = time.time() - self.tempoturn
-            # print("tempo::::" + str(alo) )
-            if ((time.time() - self.tempoturn) < 3):
-                self.speed = minumum_speed
-                self.angle = 0
-            elif ((time.time() - self.tempoturn) < 5):
-                self.angle = 0
-                self.speed = 1.2 * minumum_speed
-            else:
-                self.angle = 0
-                self.tempoturn = 0
-                self.speed = maximum_speed
+            if self.parede_frente == False and self.parede_esquerda == False and self.parede_direita == False and self.parede_frenteesquerda == False and self.parede_frentedireita == False:
+                alo = time.time() - self.tempoturn
+                # print("tempo::::" + str(alo) )
+                if ((time.time() - self.tempoturn) < 3):
+                    self.speed = minumum_speed
+                    self.angle = 0
+                elif ((time.time() - self.tempoturn) < 5):
+                    self.angle = 0
+                    self.speed = 1.2 * minumum_speed
+                else:
+                    self.angle = 0
+                    self.tempoturn = 0
+                    self.speed = maximum_speed
 
         # if (self.encontra == 0):
         #     self.speed = 0
@@ -331,13 +333,14 @@ class Driver:
                     self.speed = minumum_speed
 
             self.last_angle = self.angle
-        # else:
-        #     if (self.encontra == 0):
-        #         self.angle = viramuito
-        #         self.speed = minumum_speed
-        #     else:
-        #         self.speed = minumum_speed
-        #         self.angle = self.last_angle
+        else:
+            if self.parede_frente == False and self.parede_esquerda == False and self.parede_direita == False and self.parede_frenteesquerda == False and self.parede_frentedireita == False:
+                if (self.encontra == 0):
+                    self.angle = viramuito
+                    self.speed = minumum_speed
+                else:
+                    self.speed = minumum_speed
+                    self.angle = self.last_angle
 
         if debugmode:
             print("drivetokill x:" + str(x) + "  y:" + str(y)    + " self.angle:" + str(self.angle )+ " self.speed:" + str(self.speed ))
@@ -392,10 +395,10 @@ class Driver:
             elif (self.parede_frente and self.parede_direita) or (self.parede_frente and self.parede_frentedireita) or (self.parede_direita and self.parede_frentedireita):
                 self.angle = viramuito
                 self.speed = minumum_speed
-            #---------------nada----------->
-            else:
-                self.angle = self.last_angle
-                self.speed = minumum_speed
+            # #---------------nada----------->
+            # else:
+            #     self.angle = self.last_angle
+            #     self.speed = minumum_speed
         #----------marcha atras------------>
         else:
             self.speed = -maximum_speed
