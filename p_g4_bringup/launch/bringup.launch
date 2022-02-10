@@ -34,7 +34,7 @@
 
     <group if="$(arg driver)">
         <node name="$(arg player_name)"  pkg="p_g4_player"  type="driver" output="screen">
-            <param name="debug" value="$(arg player_name)"/>
+            <param name="debug" value="$(arg driver_debug)"/>
         </node>
     </group>
     <!--Include do visualize.launch-->
