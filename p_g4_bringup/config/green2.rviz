@@ -6,7 +6,8 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /RobotModel1
+        - /Image1
+        - /RobotModel1/Links1
       Splitter Ratio: 0.5
     Tree Height: 361
   - Class: rviz/Selection
@@ -55,7 +56,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /p_bpereira/camera/rgb/image_raw
+      Image Topic: /green2/camera/rgb/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -88,7 +89,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.10000000149011612
       Style: Flat Squares
-      Topic: /blue1/scan
+      Topic: /green2/scan
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -155,8 +156,8 @@ Visualization Manager:
           Show Trail: false
           Value: true
       Name: RobotModel
-      Robot Description: blue1/robot_description
-      TF Prefix: blue1
+      Robot Description: green2/robot_description
+      TF Prefix: green2
       Update Interval: 0
       Value: true
       Visual Enabled: true
@@ -164,7 +165,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: blue1/odom
+    Fixed Frame: green2/odom
     Frame Rate: 30
   Name: root
   Tools:
@@ -188,7 +189,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 10
+      Distance: 25.888362884521484
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
