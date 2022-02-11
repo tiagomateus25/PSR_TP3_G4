@@ -538,7 +538,7 @@ class Driver:
         if self.debug:
             print(self.name +' Sending twist command ' + str(self.goal_active) + ' speed::' + str(self.speed) + "  angulo::" + str(self.angle))
 
-        # twist = Twist()
+        twist = Twist()
         twist.linear.x = self.speed
         twist.angular.z = self.angle
         self.last_angle = self.angle
