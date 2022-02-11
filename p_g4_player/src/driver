@@ -321,7 +321,7 @@ class Driver:
     # **    Parametros
     # **        x, y: posição da presa na imagem
     # ********  ********  ********  ********  ********
-    def driveforlife(self, x, y, minumum_speed=0.3, maximum_speed=0.8):
+    def driveforlife(self, x, y, minumum_speed=0.3, maximum_speed=0.5):
 
         if ((x > 0) and (x < self.imagesize)):
             if (x < (self.imagesize/2)):
@@ -365,7 +365,7 @@ class Driver:
     # **        x, y: posição da presa na imagem
     # **        op: indica se tem alguem na imagem; 0 não; 1 sim
     # ********  ********  ********  ********  ********
-    def drivetoKill(self, x, y, op, minumum_speed=0.2, maximum_speed=0.8):
+    def drivetoKill(self, x, y, op, minumum_speed=0.2, maximum_speed=0.4):
 
         temp = (self.imagesize/2)
 
@@ -421,7 +421,7 @@ class Driver:
     def parede(self, msg, minumum_speed=0.3, maximum_speed=0.8):
         lim1 = 2
         lim2 = 1
-        lim3 = 0.5
+        lim3 = 1.5
         #--------------------limites-------------------->
         #------frente------------
         if msg.ranges[0] < lim1:
@@ -468,7 +468,11 @@ class Driver:
         #----------marcha atras------------>
         else:
             self.speed = -minumum_speed
-            self.angle = virapouco
+            if (self.parede_frente and self.parede_direita) or (self.parede_frente and self.parede_frentedireita) or (self.parede_direita and self.parede_frentedireita):
+                self.angle = viramuito
+            elif (self.parede_frente and self.parede_esquerda) or (self.parede_frente and self.parede_frenteesquerda) or (self.parede_esquerda and self.parede_frenteesquerda):
+                self.angle = -viramuito
+
         if self.debug:
             print("obstaculo!")
 
