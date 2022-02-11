@@ -467,7 +467,7 @@ class Driver:
             #     self.speed = minumum_speed
         #----------marcha atras------------>
         else:
-            self.speed = -maximum_speed
+            self.speed = -minumum_speed
             self.angle = virapouco
         if self.debug:
             print("obstaculo!")
