@@ -59,6 +59,20 @@
     <material>Gazebo/Grey</material>
   </gazebo>
 
+  <gazebo reference="base_link">
+    <sensor name="base_link" type="contact">
+      <update_rate>1000.0</update_rate>
+      <always_on>true</always_on>
+      <contact>
+        <collision> base_footprint_fixed_joint_lump__base_link_collision</collision>
+      </contact>
+      <plugin name="base_link_contact_sensor_plugin" filename="libgazebo_ros_bumper.so">
+        <bumperTopicName>contact</bumperTopicName>
+        <frameName>world</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
   <gazebo>
     <plugin name="turtlebot3_waffle_pi_controller" filename="libgazebo_ros_diff_drive.so">
       <commandTopic>cmd_vel</commandTopic>
@@ -178,18 +192,5 @@
     </sensor>
   </gazebo>
 
-  <gazebo reference="base_link">
-    <sensor name="base_link" type="contact">
-      <update_rate>1000.0</update_rate>
-      <always_on>true</always_on>
-      <contact>
-        <collision> "base_footprint_fixed_joint_lump__base_link_collision" </collision>
-      </contact>
-      <plugin name="base_link_contact_sensor_plugin" filename="libgazebo_ros_bumper.so">
-        <bumperTopicName>contact</bumperTopicName>
-        <frameName>world</frameName>
-      </plugin>
-    </sensor>
-  </gazebo>
 
 </robot>
