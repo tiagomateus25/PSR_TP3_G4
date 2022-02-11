@@ -129,6 +129,9 @@ class Driver:
                 deax = 0
                 deay = 0
 
+                cpresa = 0
+                ccacador=0
+
                 for contoursmi in contoursm:
                     if self.encontra != 5:
                         self.encontra = 1
@@ -137,22 +140,35 @@ class Driver:
                         atax = int(M['m10'] / M['m00'])
                         atay = int(M['m01'] / M['m00'])
 
+                    cpresatemp = cv2.contourArea(contoursmi)
+                    if cpresa < cpresatemp:
+                        cpresa = cpresatemp
+
                     if self.debug:
                         cv2.putText(cv_image, "presa", (atax, atay), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
                    # break;
 
                 contoursm, _ = cv2.findContours(cacador_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+                # cpresa = max(contoursm, key=cv2.contourArea)
+                # ccacador = max(contoursm, key=cv2.contourArea)
+
                 for contoursmi in contoursm:
                     if self.encontra == 0 or self.encontra == 2:
                         self.encontra = 2
                     else:
                         self.encontra = 3
                     M = cv2.moments(contoursmi)
+
+                    cpresatemp = cv2.contourArea(contoursmi)
+                    if ccacador < cpresatemp:
+                        ccacador = cpresatemp
+
                     if M['m00'] != 0:
                         deax = int(M['m10'] / M['m00'])
                         deay = int(M['m01'] / M['m00'])
 
-                    if self.debug :
+                    if self.debug:
                         cv2.putText(cv_image, "cacador", (deax, deay), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
                    # break;
 
@@ -160,7 +176,13 @@ class Driver:
                 # c = max(contours, key=cv2.contourArea)
                 # x, y, w, h = cv2.boundingRect(c)
 
-                self.drivesmart( atax, atay, deax, deay)
+                if self.debug:
+                    print('area da cpresa:' + str(cpresa) + '  area do ccacador:' + str(ccacador))
+
+                if cpresa > ccacador:
+                    self.drivesmart( atax, atay, deax, deay, 1)
+                else:
+                    self.drivesmart(atax, atay, deax, deay, 0)
 
             elif self.estrategia == 1:
                 cx = 0
@@ -208,7 +230,7 @@ class Driver:
                 cv2.waitKey(1)
 
 
-    def drivesmart(self, ax, ay,  dx, dy, minumum_speed=0.4, maximum_speed=0.8):
+    def drivesmart(self, ax, ay,  dx, dy, aproxima, minumum_speed=0.4, maximum_speed=0.8):  #se aproxima = 0 caçador mais proximo
 
         self.goal_active = 5
         # encontra = 1 : encontra presa, encontra = 2 : encontra caçador, encontra = 3 : encontra presa e caçador
@@ -229,33 +251,35 @@ class Driver:
 
                 self.tempoturn = 0
 
-            else:
-                print(self.name + "  drivesmart bloqueado nas paredes angle:" + str(self.angle) + " last_angle:" + str(
-                    self.last_angle) + " speed:"
-                      + str(self.speed) + " encontra:" + str(self.encontra) + " lastencontra:" + str(
-                    self.last_encontra))
         else:
             temp = self.imagesize / 2
 
             if ( self.encontra == 3): # existe presa e caçador
-                self.last_encontra = 0
+                self.last_encontra = 3
 
                 #verificar para que lado vira foge do caçador e pressegue a presa
                 if ( (ax > dx )):
                     self.angle = -1 * vira
-                    self.speed =  minumum_speed
-                    if ax < temp:
-                        self.angle = 0
+                    self.speed = minumum_speed
+                    if ax < temp :
+                        self.angle = vira
+                    if aproxima==0:
+                        self.angle = -1 * viramuito
                 else:
                     self.angle = vira
                     self.speed = minumum_speed
-                    if ax < temp:
-                        self.angle = 0
+                    if ax > temp:
+                        self.angle = -1*vira
+                    if aproxima == 0:
+                        self.angle = viramuito
+
+                if (ax < (temp - (temp*1.1)) and ax > (temp - (temp*0.9)) and aproxima == 1):
+                    self.angle = 0
 
             if (self.encontra == 2):  # só ve o caçador
                 self.driveforlife(dx, dy)
                 self.tempoturn = 0
-                self.last_encontra = 0
+               # self.last_encontra = 0
 
             if (self.encontra == 1 and  self.last_encontra != 5):  # só ve a presa
                 self.last_encontra = 1
@@ -308,8 +332,10 @@ class Driver:
                     self.tempoturn = 0
                     self.speed = maximum_speed
 
-        # if (self.encontra == 0):
-        #     self.speed = 0
+        # if self.last_encontra == 3 and self.encontra ==2:
+        #     self.angle = - 2 * self.last_angle
+        #     self.speed = - 0.5 * minumum_speed
+            #     self.speed = 0
         #     self.angle = 2 * viramuito
 
         if self.debug:
