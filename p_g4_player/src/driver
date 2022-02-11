@@ -77,15 +77,20 @@ class Driver:
         #rospy.spin()
         # self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstaculo)
 
+    # ********  ********  ********  ********  ********
+    # ** Função goalImageCallback
+    # **    Esta função é chamada o programa recebe actualização da imagem
+    # **    Parametros
+    # **        msg: imagem e rspectiva informação
+    # ********  ********  ********  ********  ********
     def goalImageCallback(self, msg):
      # if self.debug :
         #     print('goalImageCallback  self.equipa' + self.equipa + '  EStrategia:' + str(self.estrategia))
 
         my_team = self.equipa
 
+        # Se o objetivo for seguir o Nav Goal não precisa de tratar as imagens
         if self.goal_active != 1:
-
-         #   print('action goalImageCallback') estrategia
 
             bridge = CvBridge()
             cv_image = bridge.imgmsg_to_cv2(msg, "bgr8")  # "passthrough" ) #
@@ -98,6 +103,7 @@ class Driver:
             green_mask = cv2.inRange(cv_image, lowergreen, uppergreen)
             red_mask = cv2.inRange(cv_image, lowerred, upperred)
             blue_mask = cv2.inRange(cv_image, lowerblue, upperblue)
+
          #TODO:  alterar a atribuição dos ifs de acordo com a variavel equipa
             if my_team == 'blue':
                 presa_mask = red_mask
@@ -108,15 +114,6 @@ class Driver:
             elif my_team == 'green':
                 presa_mask = blue_mask
                 cacador_mask = red_mask
-
-
-         # TODO: procedimento
-        #     1 - se nao vires nada andas à volta
-        #     2 - ves uma presa atacas
-        #     3 - ves um cacador foges, aqui temos um problema porque quando está a fugir nao ve nada, tem que estar num
-        # estado de fuga, nunca sai deste estado? se lhe passar um presa à frente vai atras dela? depende do numero de pontos?
-        # curvas a 90º antes de bater na parede? velocidades? sempre a topo ee fica todo descontrolado, pode ter vantagens ou desvantagens.
-         # TODO: procedimento
 
             if self.estrategia == 3:
                 if self.encontra != 5:
@@ -136,10 +133,13 @@ class Driver:
                     if self.encontra != 5:
                         self.encontra = 1
                     M = cv2.moments(contoursmi)
+
+                    # centroide
                     if M['m00'] != 0:
                         atax = int(M['m10'] / M['m00'])
                         atay = int(M['m01'] / M['m00'])
 
+                    # Verificar qual a maior área
                     cpresatemp = cv2.contourArea(contoursmi)
                     if cpresa < cpresatemp:
                         cpresa = cpresatemp
@@ -160,10 +160,12 @@ class Driver:
                         self.encontra = 3
                     M = cv2.moments(contoursmi)
 
+                    # Verificar qual a maior área
                     cpresatemp = cv2.contourArea(contoursmi)
                     if ccacador < cpresatemp:
                         ccacador = cpresatemp
 
+                    # centroide
                     if M['m00'] != 0:
                         deax = int(M['m10'] / M['m00'])
                         deay = int(M['m01'] / M['m00'])
@@ -179,6 +181,7 @@ class Driver:
                 if self.debug:
                     print('area da cpresa:' + str(cpresa) + '  area do ccacador:' + str(ccacador))
 
+                # Verificar qual o maior (maior área), para ver se está mais perto
                 if cpresa > ccacador:
                     self.drivesmart( atax, atay, deax, deay, 1)
                 else:
@@ -229,7 +232,14 @@ class Driver:
                 cv2.imshow(self.name + ' ' + str(self.estrategia), cv_image)
                 cv2.waitKey(1)
 
-
+    # ********  ********  ********  ********  ********
+    # ** Função drivesmart
+    # **    Esta função é chamada quando se pretende jogar tendo em consideração os caçadores e as presas
+    # **    Parametros
+    # **        ax, ay: posição da presa na imagem
+    # **        dx, dy: posição do caçador na imagem
+    # **        aproxima: indica quem está mais proximo: 0 caçador; 1 presa
+    # ********  ********  ********  ********  ********
     def drivesmart(self, ax, ay,  dx, dy, aproxima, minumum_speed=0.4, maximum_speed=0.8):  #se aproxima = 0 caçador mais proximo
 
         self.goal_active = 5
@@ -305,6 +315,12 @@ class Driver:
                   + str(self.speed) + " encontra:" + str(self.encontra)+ " lastencontra:" + str(self.last_encontra))
 
 
+    # ********  ********  ********  ********  ********
+    # ** Função driveforlife
+    # **    Esta função é chamada quando se pretende fugir do caçador
+    # **    Parametros
+    # **        x, y: posição da presa na imagem
+    # ********  ********  ********  ********  ********
     def driveforlife(self, x, y, minumum_speed=0.3, maximum_speed=0.8):
 
         if ((x > 0) and (x < self.imagesize)):
@@ -342,6 +358,13 @@ class Driver:
             print(self.name + "  driveforlife x:" + str(x) + " y:" + str(y) + "  angle:" + str(self.angle) + " speed:" + str(
                     self.speed) + " cacador:" + str(self.encontra))
 
+    # ********  ********  ********  ********  ********
+    # ** Função Drivetokill
+    # **    Esta função é chamada quando se pretende ir na direcção da presa
+    # **    Parametros
+    # **        x, y: posição da presa na imagem
+    # **        op: indica se tem alguem na imagem; 0 não; 1 sim
+    # ********  ********  ********  ********  ********
     def drivetoKill(self, x, y, op, minumum_speed=0.2, maximum_speed=0.8):
 
         temp = (self.imagesize/2)
@@ -389,6 +412,12 @@ class Driver:
         self.goal_active = 3
         #self.goal_active = 0
 
+    # ********  ********  ********  ********  ********
+    # ** Função parede
+    # **    Esta função é chamada quando se recebe informação do laserScan
+    # **    Parametros
+    # **        msg: informação do laserScan
+    # ********  ********  ********  ********  ********
     def parede(self, msg, minumum_speed=0.3, maximum_speed=0.8):
         lim1 = 2
         lim2 = 1
@@ -443,7 +472,12 @@ class Driver:
         if self.debug:
             print("obstaculo!")
 
-
+    # ********  ********  ********  ********  ********
+    # ** Função goalReceivedCallback
+    # **    Esta função é chamada quando se recebe goal
+    # **    Parametros
+    # **        msg: informação do GOAL
+    # ********  ********  ********  ********  ********
     def goalReceivedCallback(self, msg):
         # TODO verify is goal is on odom frame
         print(self.name +'  Received new goal on frame id' + msg.header.frame_id)
@@ -458,19 +492,15 @@ class Driver:
             self.goal_active = 0
             rospy.logerr('Could not transform goal from ' + msg.header.frame_id + ' to ' + target_frame + '. Will ignore this goal.')
 
-        # print('Received new goal')
-        # self.goal = copy.copy(msg)  # store goal
-        # self.goal_active = True
-
-
-
+    # ********  ********  ********  ********  ********
+    # ** Função driveStraight
+    # **    Esta função é chamada quando se pretende ir na direcção do GOAL
+    # **    Parametros:
+    # ********  ********  ********  ********  ********
     def driveStraight(self, minumum_speed=0.2, maximum_speed=1.5):
         goal_copy = copy.deepcopy(self.goal)  # make sure we don't change the stamp field of the goal
         goal_copy.header.stamp = rospy.Time.now()
 
-        # goal_tf = tf2_geometry_msgs.PoseStamped()
-        # goal_tf.header.stamp = rospy.Time.now()
-        # goal_tf.header.frame_id = self.goal.header.frame_id
 
         #print('Transforming pose')
         goal_in_base_link = self.tf_buffer.transform(goal_copy, self.name + '/base_footprint', rospy.Duration(1))
@@ -488,6 +518,11 @@ class Driver:
         self.speed = max(minumum_speed, 0.5 * distance_to_goal)  # limit minimum speed
         self.speed = min(maximum_speed, self.speed)  # limit maximum speed
 
+    # ********  ********  ********  ********  ********
+    # ** Função sendCommandCallback
+    # **    Esta função é chamada quando se pretende enviar comandos para o robot
+    # **    Parametros:
+    # ********  ********  ********  ********  ********
     def sendCommandCallback(self, event):
 
         if (self.goal_active == 0):  # no goal, no movement
