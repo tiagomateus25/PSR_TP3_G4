@@ -321,7 +321,7 @@ class Driver:
     # **    Parametros
     # **        x, y: posição da presa na imagem
     # ********  ********  ********  ********  ********
-    def driveforlife(self, x, y, minumum_speed=0.3, maximum_speed=0.8):
+    def driveforlife(self, x, y, minumum_speed=0.3, maximum_speed=0.5):
 
         if ((x > 0) and (x < self.imagesize)):
             if (x < (self.imagesize/2)):
@@ -365,7 +365,7 @@ class Driver:
     # **        x, y: posição da presa na imagem
     # **        op: indica se tem alguem na imagem; 0 não; 1 sim
     # ********  ********  ********  ********  ********
-    def drivetoKill(self, x, y, op, minumum_speed=0.2, maximum_speed=0.8):
+    def drivetoKill(self, x, y, op, minumum_speed=0.2, maximum_speed=0.4):
 
         temp = (self.imagesize/2)
 
@@ -420,8 +420,8 @@ class Driver:
     # ********  ********  ********  ********  ********
     def parede(self, msg, minumum_speed=0.3, maximum_speed=0.8):
         lim1 = 2
-        lim2 = 1
-        lim3 = 0.5
+        lim2 = 1.5
+        lim3 = 0.6    # parede
         #--------------------limites-------------------->
         #------frente------------
         if msg.ranges[0] < lim1:
@@ -450,15 +450,15 @@ class Driver:
             self.parede_frentedireita = False
         #------------------------------------------------>
 
-        #------------Deteção----------------------------->
+        #------------------Deteção----------------------->
 
         if (msg.ranges[0] > lim3 and min(min(msg.ranges[5:15]), 10) > lim3) or (msg.ranges[0] > lim3 and min(min(msg.ranges[315:345]), 10) > lim3):
             #---------------esquerda------->
-            if (self.parede_frente and self.parede_esquerda) or (self.parede_frente and self.parede_frenteesquerda) or (self.parede_esquerda and self.parede_frenteesquerda):
+            if self.parede_frente or (self.parede_frente and self.parede_esquerda) or (self.parede_frente and self.parede_frenteesquerda) or (self.parede_esquerda and self.parede_frenteesquerda):
                 self.angle = -viramuito
                 self.speed = minumum_speed
             #------------direita----------->
-            elif (self.parede_frente and self.parede_direita) or (self.parede_frente and self.parede_frentedireita) or (self.parede_direita and self.parede_frentedireita):
+            elif self.parede_frente or (self.parede_frente and self.parede_direita) or (self.parede_frente and self.parede_frentedireita) or (self.parede_direita and self.parede_frentedireita):
                 self.angle = viramuito
                 self.speed = minumum_speed
             # #---------------nada----------->
@@ -468,7 +468,13 @@ class Driver:
         #----------marcha atras------------>
         else:
             self.speed = -maximum_speed
-            self.angle = viramuito
+            if (msg.ranges[0] > lim3 and min(min(msg.ranges[5:15]), 10) > lim3) or (
+                    msg.ranges[0] > lim3 and min(min(msg.ranges[315:345]), 10) > lim3):
+                if self.parede_frente or (self.parede_frente and self.parede_direita) or (self.parede_frente and self.parede_frentedireita) or (self.parede_direita and self.parede_frentedireita):
+                    self.angle = viramuito
+                elif self.parede_frente or (self.parede_frente and self.parede_esquerda) or (self.parede_frente and self.parede_frenteesquerda) or (self.parede_esquerda and self.parede_frenteesquerda):
+                    self.angle = -viramuito
+
         if self.debug:
             print("obstaculo!")
 
