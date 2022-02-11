@@ -455,11 +455,11 @@ class Driver:
         if (msg.ranges[0] > lim3 and min(min(msg.ranges[5:15]), 10) > lim3) or (msg.ranges[0] > lim3 and min(min(msg.ranges[315:345]), 10) > lim3):
             #---------------esquerda------->
             if (self.parede_frente and self.parede_esquerda) or (self.parede_frente and self.parede_frenteesquerda) or (self.parede_esquerda and self.parede_frenteesquerda):
-                self.angle = -viramuito
+                self.angle = -virapouco
                 self.speed = minumum_speed
             #------------direita----------->
             elif (self.parede_frente and self.parede_direita) or (self.parede_frente and self.parede_frentedireita) or (self.parede_direita and self.parede_frentedireita):
-                self.angle = viramuito
+                self.angle = virapouco
                 self.speed = minumum_speed
             # #---------------nada----------->
             # else:
@@ -468,7 +468,7 @@ class Driver:
         #----------marcha atras------------>
         else:
             self.speed = -maximum_speed
-            self.angle = viramuito
+            self.angle = virapouco
         if self.debug:
             print("obstaculo!")
 
