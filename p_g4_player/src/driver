@@ -365,7 +365,7 @@ class Driver:
     # **        x, y: posição da presa na imagem
     # **        op: indica se tem alguem na imagem; 0 não; 1 sim
     # ********  ********  ********  ********  ********
-    def drivetoKill(self, x, y, op, minumum_speed=0.2, maximum_speed=0.4):
+    def drivetoKill(self, x, y, op, minumum_speed=0.2, maximum_speed=0.5):
 
         temp = (self.imagesize/2)
 
@@ -396,8 +396,9 @@ class Driver:
         else:
             if self.parede_frente == False and self.parede_esquerda == False and self.parede_direita == False and self.parede_frenteesquerda == False and self.parede_frentedireita == False:
                 if (self.encontra == 0):
-                    self.angle = viramuito
-                    self.speed = minumum_speed
+                    self.angle = virapouco
+                    # self.angle = viramuito
+                    self.speed = maximum_speed
                 else:
                     self.speed = minumum_speed
                     self.angle = self.last_angle
