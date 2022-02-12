@@ -365,7 +365,7 @@ class Driver:
     # **        x, y: posição da presa na imagem
     # **        op: indica se tem alguem na imagem; 0 não; 1 sim
     # ********  ********  ********  ********  ********
-    def drivetoKill(self, x, y, op, minumum_speed=0.2, maximum_speed=0.5):
+    def drivetoKill(self, x, y, op, minumum_speed=0.2, maximum_speed=0.4):
 
         temp = (self.imagesize/2)
 
@@ -423,58 +423,66 @@ class Driver:
         lim1 = 1.5
         lim2 = 0.8
         lim3 = 0.3    # parede
+        lim4 = 4
+        if self.goal_active == 1:
+            if msg.ranges[0] < lim4:
+                self.parede_frente = True
+                self.speed = 0
+        else:
+
+
         #--------------------limites-------------------->
         #------frente------------
-        if msg.ranges[0] < lim1:
-            self.parede_frente = True
-        else:
-            self.parede_frente = False
-        #-------esquerda-----------
-        if min(min(msg.ranges[60:100]), 10) < lim2:
-            self.parede_esquerda = True
-        else:
-            self.parede_esquerda = False
-        #-------direita------------
-        if min(min(msg.ranges[260:300]), 10) < lim2:
-            self.parede_direita = True
-        else:
-            self.parede_direita = False
-        #------frente_esquerda-------
-        if min(min(msg.ranges[5:15]), 10) < lim3:
-            self.parede_frenteesquerda = True
-        else:
-            self.parede_frenteesquerda = False
-        #-------frente_direita--------
-        if min(min(msg.ranges[315:345]), 10) < lim3:
-            self.parede_frentedireita = True
-        else:
-            self.parede_frentedireita = False
-        #------------------------------------------------>
+            if msg.ranges[0] < lim1:
+                self.parede_frente = True
+            else:
+                self.parede_frente = False
+            #-------esquerda-----------
+            if min(min(msg.ranges[60:100]), 10) < lim2:
+                self.parede_esquerda = True
+            else:
+                self.parede_esquerda = False
+            #-------direita------------
+            if min(min(msg.ranges[260:300]), 10) < lim2:
+                self.parede_direita = True
+            else:
+                self.parede_direita = False
+            #------frente_esquerda-------
+            if min(min(msg.ranges[5:15]), 10) < lim3:
+                self.parede_frenteesquerda = True
+            else:
+                self.parede_frenteesquerda = False
+            #-------frente_direita--------
+            if min(min(msg.ranges[315:345]), 10) < lim3:
+                self.parede_frentedireita = True
+            else:
+                self.parede_frentedireita = False
+            #------------------------------------------------>
 
-        #------------------Deteção----------------------->
+            #------------------Deteção----------------------->
 
-        if (msg.ranges[0] > lim3 and min(min(msg.ranges[5:15]), 10) > lim3) or (msg.ranges[0] > lim3 and min(min(msg.ranges[315:345]), 10) > lim3):
-            #---------------esquerda------->
-            if self.parede_frente or (self.parede_frente and self.parede_esquerda) or (self.parede_frente and self.parede_frenteesquerda) or (self.parede_esquerda and self.parede_frenteesquerda):
-                self.angle = -viramuito
-                self.speed = minumum_speed
-            #------------direita----------->
-            elif self.parede_frente or (self.parede_frente and self.parede_direita) or (self.parede_frente and self.parede_frentedireita) or (self.parede_direita and self.parede_frentedireita):
-                self.angle = viramuito
-                self.speed = minumum_speed
-            # #---------------nada----------->
-            # else:
-            #     self.angle = self.last_angle
-            #     self.speed = minumum_speed
-        #----------marcha atras------------>
-        else:
-            self.speed = -maximum_speed
-            if (msg.ranges[0] > lim3 and min(min(msg.ranges[5:15]), 10) > lim3) or (
-                    msg.ranges[0] > lim3 and min(min(msg.ranges[315:345]), 10) > lim3):
-                if self.parede_frente or (self.parede_frente and self.parede_direita) or (self.parede_frente and self.parede_frentedireita) or (self.parede_direita and self.parede_frentedireita):
-                    self.angle = viramuito
-                elif self.parede_frente or (self.parede_frente and self.parede_esquerda) or (self.parede_frente and self.parede_frenteesquerda) or (self.parede_esquerda and self.parede_frenteesquerda):
+            if (msg.ranges[0] > lim3 and min(min(msg.ranges[5:15]), 10) > lim3) or (msg.ranges[0] > lim3 and min(min(msg.ranges[315:345]), 10) > lim3):
+                #---------------esquerda------->
+                if self.parede_frente or (self.parede_frente and self.parede_esquerda) or (self.parede_frente and self.parede_frenteesquerda) or (self.parede_esquerda and self.parede_frenteesquerda):
                     self.angle = -viramuito
+                    self.speed = minumum_speed
+                #------------direita----------->
+                elif self.parede_frente or (self.parede_frente and self.parede_direita) or (self.parede_frente and self.parede_frentedireita) or (self.parede_direita and self.parede_frentedireita):
+                    self.angle = viramuito
+                    self.speed = minumum_speed
+                # #---------------nada----------->
+                # else:
+                #     self.angle = self.last_angle
+                #     self.speed = minumum_speed
+            #----------marcha atras------------>
+            else:
+                self.speed = -maximum_speed
+                if (msg.ranges[0] > lim3 and min(min(msg.ranges[5:15]), 10) > lim3) or (
+                        msg.ranges[0] > lim3 and min(min(msg.ranges[315:345]), 10) > lim3):
+                    if self.parede_frente or (self.parede_frente and self.parede_direita) or (self.parede_frente and self.parede_frentedireita) or (self.parede_direita and self.parede_frentedireita):
+                        self.angle = viramuito
+                    elif self.parede_frente or (self.parede_frente and self.parede_esquerda) or (self.parede_frente and self.parede_frenteesquerda) or (self.parede_esquerda and self.parede_frenteesquerda):
+                        self.angle = -viramuito
 
         if self.debug:
             print("obstaculo!")
@@ -504,7 +512,7 @@ class Driver:
     # **    Esta função é chamada quando se pretende ir na direcção do GOAL
     # **    Parametros:
     # ********  ********  ********  ********  ********
-    def driveStraight(self, minumum_speed=0.2, maximum_speed=1.5):
+    def driveStraight(self, minumum_speed=0.2, maximum_speed=0.5):
         goal_copy = copy.deepcopy(self.goal)  # make sure we don't change the stamp field of the goal
         goal_copy.header.stamp = rospy.Time.now()
 
@@ -517,14 +525,15 @@ class Driver:
         x = goal_in_base_link.pose.position.x
         y = goal_in_base_link.pose.position.y
 
-        self.angle = math.atan2(y, x)
+        # self.angle = math.atan2(y, x)
 
         distance_to_goal = math.sqrt(x ** 2 + y ** 2)
         if distance_to_goal < 0.1:
             self.goal_active = 0
-        self.speed = max(minumum_speed, 0.5 * distance_to_goal)  # limit minimum speed
-        self.speed = min(maximum_speed, self.speed)  # limit maximum speed
-
+        if self.parede_frente == False and self.parede_esquerda == False and self.parede_direita == False and self.parede_frenteesquerda == False and self.parede_frentedireita == False:
+            self.speed = max(minumum_speed, 0.5 * distance_to_goal)  # limit minimum speed
+            self.speed = min(maximum_speed, self.speed)  # limit maximum speed
+            self.angle = math.atan2(y, x)
     # ********  ********  ********  ********  ********
     # ** Função sendCommandCallback
     # **    Esta função é chamada quando se pretende enviar comandos para o robot

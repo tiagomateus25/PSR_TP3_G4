@@ -5,16 +5,16 @@
 <!--    Red Team-->
 
     <!--        red1-->
-<!--    <include file="$(find p_g4_bringup)/launch/bringup.launch">-->
-<!--        <arg name="player_name" value="red1"/>-->
-<!--        <arg name="player_color" value="Red"/>-->
-<!--        <arg name="x_pos" value="0"/>-->
-<!--        <arg name="y_pos" value="0"/>-->
-<!--        <arg name="z_pos" value="0"/>-->
-<!--        <arg name="visualize" value="true"/>-->
-<!--        <arg name="driver" value="true"/>-->
-<!--        <arg name="driver_debug" value="false"/>-->
-<!--    </include>-->
+    <include file="$(find p_g4_bringup)/launch/bringup.launch">
+        <arg name="player_name" value="red1"/>
+        <arg name="player_color" value="Red"/>
+        <arg name="x_pos" value="0"/>
+        <arg name="y_pos" value="0"/>
+        <arg name="z_pos" value="0"/>
+        <arg name="visualize" value="true"/>
+        <arg name="driver" value="true"/>
+        <arg name="driver_debug" value="true"/>
+    </include>
 
 
 <!--   <include file="$(find p_g4_bringup)/launch/bringup.launch">-->
@@ -43,40 +43,40 @@
 <!--    Green Team-->
 
     <!--    green1-->
-    <include file="$(find p_g4_bringup)/launch/bringup.launch">
-        <arg name="player_name" value="green1"/>
-        <arg name="player_color" value="Green"/>
-        <arg name="x_pos" value="5"/>
-        <arg name="y_pos" value="5"/>
-        <arg name="z_pos" value="0"/>
-        <arg name="visualize" value="false"/>
-        <arg name="driver" value="true"/>
-        <arg name="driver_debug" value="false"/>
-    </include>
+<!--    <include file="$(find p_g4_bringup)/launch/bringup.launch">-->
+<!--        <arg name="player_name" value="green1"/>-->
+<!--        <arg name="player_color" value="Green"/>-->
+<!--        <arg name="x_pos" value="5"/>-->
+<!--        <arg name="y_pos" value="5"/>-->
+<!--        <arg name="z_pos" value="0"/>-->
+<!--        <arg name="visualize" value="false"/>-->
+<!--        <arg name="driver" value="true"/>-->
+<!--        <arg name="driver_debug" value="false"/>-->
+<!--    </include>-->
 
 
-    <include file="$(find p_g4_bringup)/launch/bringup.launch">
-        <arg name="player_name" value="green2"/>
-        <arg name="player_color" value="Green"/>
-        <arg name="x_pos" value="6"/>
-        <arg name="y_pos" value="5"/>
-        <arg name="z_pos" value="0"/>
-        <arg name="visualize" value="false"/>
-        <arg name="driver" value="true"/>
-        <arg name="driver_debug" value="false"/>
-    </include>
+<!--    <include file="$(find p_g4_bringup)/launch/bringup.launch">-->
+<!--        <arg name="player_name" value="green2"/>-->
+<!--        <arg name="player_color" value="Green"/>-->
+<!--        <arg name="x_pos" value="6"/>-->
+<!--        <arg name="y_pos" value="5"/>-->
+<!--        <arg name="z_pos" value="0"/>-->
+<!--        <arg name="visualize" value="false"/>-->
+<!--        <arg name="driver" value="true"/>-->
+<!--        <arg name="driver_debug" value="false"/>-->
+<!--    </include>-->
 
 
-    <include file="$(find p_g4_bringup)/launch/bringup.launch">
-        <arg name="player_name" value="green3"/>
-        <arg name="player_color" value="Green"/>
-        <arg name="x_pos" value="7"/>
-        <arg name="y_pos" value="5"/>
-        <arg name="z_pos" value="0"/>
-        <arg name="visualize" value="false"/>
-        <arg name="driver" value="true"/>
-        <arg name="driver_debug" value="false"/>
-    </include>
+<!--    <include file="$(find p_g4_bringup)/launch/bringup.launch">-->
+<!--        <arg name="player_name" value="green3"/>-->
+<!--        <arg name="player_color" value="Green"/>-->
+<!--        <arg name="x_pos" value="7"/>-->
+<!--        <arg name="y_pos" value="5"/>-->
+<!--        <arg name="z_pos" value="0"/>-->
+<!--        <arg name="visualize" value="false"/>-->
+<!--        <arg name="driver" value="true"/>-->
+<!--        <arg name="driver_debug" value="false"/>-->
+<!--    </include>-->
 
 <!--    Blue Team-->
 
