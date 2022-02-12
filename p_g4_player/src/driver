@@ -418,10 +418,10 @@ class Driver:
     # **    Parametros
     # **        msg: informação do laserScan
     # ********  ********  ********  ********  ********
-    def parede(self, msg, minumum_speed=0.3, maximum_speed=0.8):
-        lim1 = 2
-        lim2 = 1.5
-        lim3 = 0.6    # parede
+    def parede(self, msg, minumum_speed=0.2, maximum_speed=0.8):
+        lim1 = 1.5
+        lim2 = 0.8
+        lim3 = 0.3    # parede
         #--------------------limites-------------------->
         #------frente------------
         if msg.ranges[0] < lim1:
