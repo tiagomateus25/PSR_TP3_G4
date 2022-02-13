@@ -431,8 +431,8 @@ class Driver:
         print('parede frente::' + str(msg.ranges[0]) + "   esquerda:" + str(atemp) + "   direita:" + str(btemp))
 
         if self.goal_active == 1:
-
-            print('obstaculo parede:' + str(self.parede_frente))
+            if self.debug:
+                print('obstaculo ou parede:' + str(self.parede_frente))
 
             if (msg.ranges[0] < lim1 or atemp < lim3 or btemp < lim3):
 
@@ -467,9 +467,6 @@ class Driver:
 
             else:
                 self.parede_frente = False
-        if self.debug:
-            print(self.name + ' Obstacle before twist command ' + str(self.goal_active) + ' speed::' + str(
-                self.speed) + "  angulo::" + str(self.angle))
         else:
             #--------------------limites-------------------->
             #------frente------------
@@ -521,7 +518,7 @@ class Driver:
                         self.angle = -viramuito
 
         if self.debug:
-            print("obstaculo!")
+            print("obstaculo ou parede!")
 
     # ********  ********  ********  ********  ********
     # ** Função goalReceivedCallback
