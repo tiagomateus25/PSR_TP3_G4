@@ -3,15 +3,21 @@ Trabalho prático 3 do grupo 4
 
 #worlds
 
+#arenas
+
 roslaunch p_g4_bringup gazebo.launch
+
+#pista
 
 roslaunch p_g4_bringup track.launch
 
-#bringup
+#jogo da apanhada
 
 roslaunch p_g4_bringup game_bringup.launch
 
-roslaunch p_g4_bringup bringup.launch 
+#condução manual
+
+roslaunch p_g4_bringup bringup.launch && roslaunch p_g4_bringup teleop.launch
 
 #arbitro
 
