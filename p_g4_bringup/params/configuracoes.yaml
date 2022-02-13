@@ -1,19 +1,19 @@
 #estrategia do jogador
-#1: ataque, 2: defesa, 3: o que calhar, ver o que vale mais
+#1: ataque, 2: defesa, 3: hibrido, 4:vai ver o que vale mais se for igual 3
 
 #redjogador1: 1
 #redjogador2: 2
 #redjogador3: 1
 
-redred1: 3
+redred1: 4
 redred2: 2
 redred3: 1
 
-greengreen1: 1
+greengreen1: 3
 greengreen2: 2
 greengreen3: 1
 
-blueblue1: 1
+blueblue1: 3
 blueblue2: 2
 blueblue3: 1
 

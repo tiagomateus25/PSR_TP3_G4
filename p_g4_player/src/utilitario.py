@@ -34,9 +34,22 @@ def configurarEstrategia(player_team, player_name):
 
     estrategia = {player_name: rospy.get_param('/' + player_team + player_name)}
 
+    temp =  estrategia[player_name]
+   # print("Utilitario ::" + str(temp))
+
+    if temp == 4:
+        estrategia[player_name] = 3
+    if abs(rospy.get_param('/positive_score') ) > abs(rospy.get_param('/negative_score')):
+        estrategia[player_name] = 1
+    if abs(rospy.get_param('/positive_score') ) < abs(rospy.get_param('/negative_score')):
+        estrategia[player_name] = 2
+
       # estrategia = {'red1': rospy.get_param('/'+player_team+'jogador1'),
       #               'red2': rospy.get_param('/'+player_team+'jogador2'),
       #               'red3': rospy.get_param('/'+player_team+'jogador3')}
+
+    #print("Utilitario  fim::" + str(estrategia))
+
 
     # TODO: verificar se é erategia 3 e atribuir uma nova conforme os pontos de apanhar e ser apanhado
     #  int(math.fabs(-8))
