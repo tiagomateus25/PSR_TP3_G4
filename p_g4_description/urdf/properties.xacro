@@ -11,10 +11,6 @@
         <color rgba="1.0 0.4 0.0 1.0"/>
     </material>
 
-    <material name="sarascolor">
-        <color rgba="0.2 0.5 0.8 1.0"/>
-    </material>
-
     <!--    Team hunt player colors-->
     <material name="Red">
     <color rgba="1.0 0.0 0.0 1.0"/>

@@ -71,12 +71,6 @@ class Driver:
         self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.parede)
         self.image_subscriber = rospy.Subscriber("/" + self.name + "/camera/rgb/image_raw", Image, self.goalImageCallback)
 
-  #  def action(self):
-       # print('action image_subscriber')
-    #    self.image_subscriber = rospy.Subscriber("/" + self.name + "/camera/rgb/image_raw", Image, self.goalImageCallback)
-        #rospy.spin()
-        # self.laser_scan = rospy.Subscriber("/" + self.name + "/scan", LaserScan, self.obstaculo)
-
     # ********  ********  ********  ********  ********
     # ** Função goalImageCallback
     # **    Esta função é chamada o programa recebe actualização da imagem
@@ -621,21 +615,6 @@ def main():
         rospy.spin()
 
     cv2.destroyAllWindows()
-
-    # rospy.init_node('p_bpereira_driver', anonymous=False)
-    # pub = rospy.Publisher('p_bpereira/cmd_vel', Twist, queue_size=1)
-    #
-    # rate =rospy.Rate(10)
-    #
-    # while not rospy.is_shutdown():
-    #
-    #     twist = Twist()
-    #     twist.linear.x = 0.5
-    #     twist.angular.z = -1
-    #
-    #     pub.publish(twist)
-    #     rate.sleep()
-
 
 if __name__ == '__main__':
     try:
