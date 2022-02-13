@@ -467,6 +467,9 @@ class Driver:
 
             else:
                 self.parede_frente = False
+        if self.debug:
+            print(self.name + ' Obstacle before twist command ' + str(self.goal_active) + ' speed::' + str(
+                self.speed) + "  angulo::" + str(self.angle))
         else:
             #--------------------limites-------------------->
             #------frente------------
