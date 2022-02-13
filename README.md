@@ -11,7 +11,7 @@ roslaunch p_g4_bringup track.launch
 
 roslaunch p_g4_bringup game_bringup.launch
 
-roslaunch p_g4_bringup bringup.launch __name:=red1
+roslaunch p_g4_bringup bringup.launch 
 
 #arbitro
 
