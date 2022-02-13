@@ -563,7 +563,7 @@ class Driver:
         distance_to_goal = math.sqrt(x ** 2 + y ** 2)
         if distance_to_goal < 0.1:
             self.goal_active = 0
-        if self.parede_frente == False and self.parede_esquerda == False and self.parede_direita == False and self.parede_frenteesquerda == False and self.parede_frentedireita == False:
+        if self.parede_frente == False:
             self.speed = max(minumum_speed, 0.5 * distance_to_goal)  # limit minimum speed
             self.speed = min(maximum_speed, self.speed)  # limit maximum speed
             self.angle = math.atan2(y, x)
